@@ -25,6 +25,7 @@ function getAllDataAndSend(db) {
     };
     getAllRequest.onsuccess = (event) => {
         const allData = getAllRequest.result;
+        console.log(" all requests in database: ", allData)
         allData.forEach((data) => {
             sendData(data).then(() => {
                 // delete after
@@ -48,29 +49,19 @@ function getDataAndSend() {
     }
     request.onsuccess = (event) => {
         db = event.target.result;
-        getData(db);
+        getAllDataAndSend(db);
     }
 }
 
 function sendData(message) {
-    const formData = new FormData();
-    formData.append('message', message.message);
-    let formDataObj = {};
-    for (let [key, value] of formData.entries()) {
-        formDataObj[key] = value;
-    }
-    console.log('FormData contents:', formDataObj);
+
+
+    const jsonData = JSON.stringify(message);
 
 
     fetch('https://indigo-caribou-270666.hostingersite.com/api/addMessage', {
         method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+        body: jsonData
     })
     .then(data => {
         console.log('Message sent successfully', data);
